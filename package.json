@@ -1,6 +1,6 @@
 {
   "name": "@zouloux/static-http",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "0 dependency node based static http server.",
   "main": "./dist/server.es2017.cjs",
   "module": "./dist/server.es2020.mjs",

@@ -2,7 +2,28 @@
 
 0 dependency node based static http server.
 
-### Start a static server from your terminal
+### Features 👍
+
+- Super lightweight
+- Start a local static server in 1 command
+- Correct mime-types
+- Default to `index.html`
+- Directory listing if index is missing
+- Types included for Node module usage
+
+### Not included 👎
+
+- No CORS
+- No HTTP credentials
+- No cookies
+- No cache
+- No HLS server for media streaming
+
+### Wishlist 🙏
+- Streaming of huge files (big files will be loaded entirely into RAM)
+
+
+# Start a static server from your terminal
 
 ##### Start with default port on current directory 
 - `npx @zouloux/http-server`
@@ -11,7 +32,7 @@
 - `npx @zouloux/http-server ./docs/`
 
 ##### Specify port
-- `npx @zouloux/http-server ./docs/ -p 8080`
+- `npx @zouloux/http-server ./docs/ -p 8080` (or `--port`)
 
 ### Start from a node script
 
@@ -26,6 +47,10 @@ startServer({
 	port: 8080,
 	// Optionnal : specify root directory
 	root: './docs/',
+	// Optionnal : set custom index file. Default is index.html
+	indexFile: 'index.html',
+	// Optionnal : allow directory indexing if index file is missing. Default is true.
+	allowDirectoryIndex: true,
 	// Optional - Callback executed before any request
 	onRequest: async (request, response) => {
 		// Return false to halt and disable default static behavior
@@ -38,3 +63,12 @@ startServer({
 	}
 })
 ```
+
+
+## How to test
+
+1. Clone this repository
+2. `npm i`
+3. `npm run build && node dist/cli.es2020.mjs test`
+
+You should see an index file with a directory listing link.

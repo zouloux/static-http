@@ -1,38 +1,93 @@
 import { createServer } from 'http';
 import path from 'path';
-import { readFile, access } from "fs/promises";
+import { readFile, access, readdir, stat } from "fs/promises";
 import { getMimeTypeFromExtension } from "./mime-types";
 import { responseError } from "./errors";
 
 // ----------------------------------------------------------------------------- TYPES
 
-export interface IStartServerOptions {
-	port 	?: number
-	root 	?: string
-	index	?: string
-	charset	?: string
-	onInfo	?: TLogRequest
-	onRequest	?: (request, response) => Promise<boolean|void>
+export interface IServerOptions
+{
+	port 				?: number
+	root 				?: string
+	indexFile			?: string
+	charset				?: string
+	allowDirectoryIndex ?: boolean
+	onInfo				?: TLogRequest
+	onRequest			?: (request, response) => Promise<boolean|void>
 }
 
 type TLogRequest = (code:number, filePath:string) => void
 
-// ----------------------------------------------------------------------------- SERVER REQUEST
+// ----------------------------------------------------------------------------- FILE HELPERS
 
-async function staticServerRequest ( request, response, options:IStartServerOptions ) {
-	// Get requested file path. Default it to index.html.
-	let filePath = request.url
-	if ( filePath === "/" )
-		filePath += options.index
-	// Get mime-type from extension
-	const fileExtension = path.extname( filePath ).split('.')[1].toLowerCase();
-	const mimeType = getMimeTypeFromExtension( fileExtension )
-	// Prepend base directory to file path and check if this file exists
-	filePath = path.join( options.root, filePath )
+type TFileStatus = "nope" | "file" | "directory"
+async function getFileStatus ( filePath:string ):Promise<TFileStatus> {
 	try {
-		await access(filePath)
+		await access( filePath )
+		return (await stat( filePath )).isDirectory() ? "directory" : "file";
 	}
 	catch {
+		return "nope"
+	}
+}
+
+// ----------------------------------------------------------------------------- DIRECTORY LISTING
+
+const buildLink = (href:string, fileName:string = href) => `<a href="/${href}">${fileName}</a>`
+
+const listingStyle = `<style>
+	body { font-family: sans-serif }
+	a { display: inline-block; margin-top: 4px; color: black;font-size: 16px;text-decoration: none; }
+	a:hover{ text-decoration: underline }
+</style>`
+
+async function directoryIndex ( response, currentDirectoryPath:string, options:IServerOptions ) {
+	const files = await readdir( currentDirectoryPath )
+	const base = path.relative( options.root, currentDirectoryPath )
+	const htmlLinks = [ buildLink( path.join(base, ".."), "[ Parent directory ]" ) ]
+	for ( const linkPath of files ) {
+		const status = await getFileStatus( path.join(currentDirectoryPath, linkPath ))
+		const fileName = linkPath + (status === "directory" ? "/" : "")
+		const href = path.join( base, linkPath )
+		htmlLinks.push( buildLink(href, `/${fileName}`) )
+	}
+	options.onInfo?.( 200, currentDirectoryPath )
+	const lines = [
+		`<h3>/${base}/</h3>`,
+		listingStyle,
+		...htmlLinks.map( link => `${link}<br/>`),
+	]
+	response.writeHead(200, { 'Content-Type': getMimeTypeFromExtension("html") });
+	response.end(lines.join("\n"), options.charset);
+}
+
+// ----------------------------------------------------------------------------- STATIC SERVER REQUEST
+
+async function staticServerRequest ( request, response, options:IServerOptions ) {
+	// Prepend base directory to file path.
+	let filePath = path.join( options.root, request.url )
+	// Check if requested path is a directory. Map to index file.
+	const status = await getFileStatus( filePath )
+	if ( status === "directory" || filePath.lastIndexOf("/") === filePath.length - 1 )
+		filePath = path.join( filePath, options.indexFile )
+	// Directory listing
+	const indexStatus = await getFileStatus( filePath )
+	if ( status === "directory" && indexStatus === "nope" && options.allowDirectoryIndex ) {
+		const currentDirectoryPath = path.dirname( filePath )
+		await directoryIndex( response, currentDirectoryPath, options );
+		return;
+	}
+	// Get mime-type from extension
+	let fileExtension = path.extname( filePath )
+	fileExtension = (
+		fileExtension
+		? fileExtension.split('.')[1].toLowerCase()
+		: ''
+	)
+	const mimeType = getMimeTypeFromExtension( fileExtension )
+	if ( indexStatus === "nope" ) {
+		// File not found
 		options.onInfo?.( 404, filePath )
 		responseError( response, 404, mimeType, options.charset )
 		return;
@@ -59,15 +114,17 @@ async function staticServerRequest ( request, response, options:IStartServerOpti
  * Start a static server
  * @param options
  */
-export function startServer ( options:IStartServerOptions ):IStartServerOptions {
+export function startServer ( options:IServerOptions ):IServerOptions {
 	// Default parameters
 	options = {
 		port: 8765,
 		root: ".",
-		index: "index.html",
+		indexFile: "index.html",
+		allowDirectoryIndex: true,
 		charset: "utf-8",
 		onInfo: (code:number, filePath:string) => {
-			console.log(`${code} - ${path.relative(options.root, filePath)}`)
+			const color = code === 200 ? `\x1b[1;0;102m` : `\x1b[1;97;41m`
+			console.log(`${color} ${code} \x1b[0m - /${path.relative(options.root, filePath)}`)
 		},
 		...options
 	}

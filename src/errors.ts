@@ -14,7 +14,7 @@ export function responseError ( response, errorCode, mimeType, charset ) {
 	)
 	const errorMessage = `${errorCode} - ${errorStatus}`
 	if ( mimeType === "text/html" )
-		response.end(`<h3>${errorMessage}</h3>`, charset);
+		response.end(`<h2>${errorMessage}</h2>`, charset);
 	else if ( mimeType === "application/json" )
 		response.end(`{"error": {"code": ${errorCode}, "status": "${errorStatus}"}}`, charset);
 	else

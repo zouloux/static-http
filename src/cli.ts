@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-import { IStartServerOptions, startServer } from "./server";
+import { IServerOptions, startServer } from "./server";
 import { accessSync } from "fs"
 import path from "path";
 import { networkInterfaces } from "os";
 
 // Get parameters from cli
-let options:IStartServerOptions = {}
+let options:IServerOptions = {}
 process.argv.forEach( (arg, index) => {
 	// First argvs are useless
 	if ( index < 2 ) return
@@ -59,3 +59,4 @@ const lines = [
 	...ips.map( ip => `- http://${ip}:${options.port}/`),
 ]
 console.log( lines.join("\n") )
+console.log("")
