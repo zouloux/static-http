@@ -1,0 +1,50 @@
+{
+  "name": "@zouloux/static-http",
+  "version": "0.1.0",
+  "description": "0 dependency node based static http server.",
+  "main": "./dist/server.es2017.cjs",
+  "module": "./dist/server.es2020.mjs",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "static-http": "./dist/cli.es2022.mjs",
+    "static-http-legacy": "./dist/cli.es2019.cjs"
+  },
+  "scripts": {
+    "reset": "rm -rf node_modules && npm i",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsbundle build",
+    "publish": "npm run clean && tsbundle publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zouloux/static-http.git"
+  },
+  "keywords": [
+    "http",
+    "server",
+    "node"
+  ],
+  "author": "Alexis Bouhet (ZoulouX)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zouloux/static-http/issues"
+  },
+  "homepage": "https://github.com/zouloux/static-http#readme",
+  "devDependencies": {
+    "@types/node": "^18.8.4",
+    "@zouloux/tsbundle": "^1.4.0",
+    "typescript": "^4.8.4"
+  },
+  "tsbundle": {
+    "output": "./dist",
+    "formats": [
+      "es2017.cjs",
+      "es2020.mjs"
+    ],
+    "files": [
+      {
+        "input": "./src/cli.ts"
+      }
+    ]
+  }
+}
