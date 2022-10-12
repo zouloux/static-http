@@ -19,7 +19,7 @@
 - No cache
 - No HLS server for media streaming
 
-### Wishlist 🙏
+### 🙏 Wishlist
 
 - Streaming of huge files (big files will be loaded entirely into RAM)
 - Compatibility with byte-start for video seeking
