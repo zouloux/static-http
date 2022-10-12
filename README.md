@@ -2,25 +2,27 @@
 
 0 dependency node based static http server.
 
-### Features 👍
+### Features
 
-- Super lightweight
-- Start a local static server in 1 command
-- Correct mime-types
-- Default to `index.html`
-- Directory listing if index is missing
-- Types included for Node module usage
+✅ Super lightweight
+✅ Start a local static server in 1 command
+✅ Correct mime-types
+✅ Default to `index.html`
+✅ Directory listing if index is missing
+✅ Types included for Node module usage
 
-### Not included 👎
+### Not included and not planned
 
-- No CORS
-- No HTTP credentials
-- No cookies
-- No cache
-- No HLS server for media streaming
+❌ No CORS
+❌ No HTTP credentials
+❌ No cookies
+❌ No cache
+❌ No HLS server for media streaming
 
 ### Wishlist 🙏
+
 - Streaming of huge files (big files will be loaded entirely into RAM)
+- Compatibility with byte-start for video seeking
 
 
 # Start a static server from your terminal
