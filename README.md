@@ -26,17 +26,17 @@
 # Start a static server from your terminal
 
 ##### Start with default port on current directory 
-- `npx @zouloux/http-server`
+- `npx @zouloux/static-http`
 
 ##### Specify root directory
-- `npx @zouloux/http-server ./docs/`
+- `npx @zouloux/static-http ./docs/`
 
 ##### Specify port
-- `npx @zouloux/http-server ./docs/ -p 8080` (or `--port`)
+- `npx @zouloux/static-http ./docs/ -p 8080` (or `--port`)
 
 ### Start from a node script
 
-- `npm i @zouloux/http-server`
+- `npm i @zouloux/static-http`
 
 ```typescript
 import { startServer } from "server"
