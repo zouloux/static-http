@@ -1,4 +1,4 @@
-# Node http-server
+# Node static http
 
 0 dependency node based static http server.
 
