@@ -13,16 +13,20 @@
 
 ### ❌ Not included and not planned
 
+- No config
 - No CORS
 - No HTTP credentials
 - No cookies
 - No cache
 - No HLS server for media streaming
+- No automatic browser open
+- No routing system (but you can handle routes yourself with `onRequest`)
 
 ### 🙏 Wishlist
 
-- Streaming of huge files (big files will be loaded entirely into RAM)
-- Compatibility with byte-start for video seeking
+- Streaming of huge files (big files will be loaded entirely into RAM) ?
+- Compatibility with byte-start for video seeking ?
+- Searching for next available port automatically
 
 
 # Start a static server from your terminal
@@ -35,6 +39,18 @@
 
 ##### Specify port
 - `npx @zouloux/static-http ./docs/ -p 8080` (or `--port`)
+
+# Install it globally and use it every day
+
+##### With node
+- `npm i -g @zouloux/static-http`
+
+##### With bun 🐰
+- `bun i -g @zouloux/static-http`
+
+##### Use it with
+- `static-http`
+
 
 ### Start from a node script
 
@@ -73,4 +89,4 @@ startServer({
 2. `npm i`
 3. `npm run build && node dist/cli.es2020.mjs test`
 
-You should see an index file with a directory listing link.
+Open link in console and you should see an index file with a directory listing link.
