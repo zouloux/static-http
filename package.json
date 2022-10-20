@@ -1,10 +1,10 @@
 {
   "name": "@zouloux/static-http",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "0 dependency node based static http server.",
   "main": "./dist/server.es2017.cjs",
   "module": "./dist/server.es2020.mjs",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/server.d.ts",
   "bin": {
     "static-http": "./dist/cli.es2020.mjs",
     "static-http-legacy": "./dist/cli.es2017.cjs"
