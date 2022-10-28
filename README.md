@@ -57,7 +57,7 @@
 - `npm i @zouloux/static-http`
 
 ```typescript
-import { startServer } from "server"
+import { startServer } from "@zouloux/static-http"
 
 // Start a server with custom options.
 startServer({
